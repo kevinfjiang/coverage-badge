@@ -1,0 +1,56 @@
+name: Coverage Badge
+description: Writes coverage
+inputs:
+  coverage:
+    description: Code coverage as a percentage in range [0, 100]
+    required: true
+  color:
+    description: Color of badge
+    required: false
+    default: ""
+  change_file:
+    description: Markdown files to be modified and has the tags  <!-- Coverage Comment:Begin -->/,/<!-- Coverage Comment:End -->
+    required: false
+    default: ""
+  style:
+    description: shields.io style of the badge
+    required: false
+    default: "for-the-badge"
+outputs:
+  badge:
+    description: Markdown badge url
+    value: ${{ steps.make_badge.outputs.badge }}
+runs:
+  using: composite
+  steps:
+    - id: choose_color
+      shell: bash
+      run: |
+        if ${{ inputs.color != '' }}; then
+          COLOR="${{ inputs.color }}"
+        elif ((100 >= ${{ inputs.coverage }} && ${{ inputs.coverage }} >= 80)); then
+          COLOR="green"
+        elif ((80 > ${{ inputs.coverage }} && ${{ inputs.coverage }} >= 60)); then
+          COLOR="yellow"
+        elif ((60 > ${{ inputs.coverage }} && ${{ inputs.coverage }} >= 0)); then
+          COLOR ="red"
+        else
+          exit 1
+        fi
+        echo "color=$COLOR" >> $GITHUB_OUTPUT
+    - id: make_badge
+      shell: bash
+      run: echo "badge=https://img.shields.io/badge/Coverage-${{ inputs.coverage }}%25-${{ steps.choose_color.outputs.color }}.svg?style=${{ inputs.style }}" >> $GITHUB_OUTPUT
+    - id: update_markdown
+      if: ${{ inputs.change_file }}
+      shell: bash
+      run: |
+        # Really long command, adds badge with color and coverage between markers in README.md
+        sed -i '/<!-- Coverage Comment:Begin -->/,/<!-- Coverage Comment:End -->/c\<!-- Coverage Comment:Begin -->\n[coverage_badge]: ${{ steps.make_badge.outputs.badge }}\n<!-- Coverage Comment:End -->' ${{ inputs.change_file }}
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Update coverage badge on Readme
+        branch: ${{ github.event.pull_request.merged && github.base_ref || github.head_ref }}
+        add_options: '-u'
+        commit_options: '--no-verify'
+

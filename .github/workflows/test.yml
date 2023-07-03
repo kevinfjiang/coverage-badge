@@ -1,0 +1,17 @@
+name: Test github action
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  test:
+    name: Test the github action
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v3
+    - uses: kevinfjiang/coverage-badge@main
+      with:
+        coverage: 100
+        change_file: ./README.md
+
