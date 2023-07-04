@@ -13,7 +13,6 @@ jobs:
     outputs:
         badge: ${{ steps.default.outputs.badge }}
     steps:
-    - uses: actions/checkout@v3
     - id: default
       uses: kevinfjiang/coverage-badge@main
       with:
@@ -29,7 +28,6 @@ jobs:
     name: Compare defaults for github action
     needs: test
     runs-on: ubuntu-latest
-
     permissions:
       contents: read  # Only give read permission as write isn't needed
     steps:

@@ -16,6 +16,12 @@ inputs:
     description: shields.io style of the badge
     required: false
     default: "for-the-badge"
+  repo_token:
+    description: GitHub Action token
+    default: ${{ github.token }}
+  ref:
+    description: Branch to commit onto
+    default: ${{ github.head_ref }}
 outputs:
   badge:
     description: Markdown badge url
@@ -41,6 +47,11 @@ runs:
     - id: make_badge
       shell: bash
       run: echo "badge=https://img.shields.io/badge/Coverage-${{ inputs.coverage }}%25-${{ steps.choose_color.outputs.color }}.svg?style=${{ inputs.style }}" >> $GITHUB_OUTPUT
+    - uses: actions/checkout@v3
+      if: ${{ inputs.change_file }}
+      with:
+        ref: ${{ inputs.ref }}
+        token: ${{ inputs.repo_token }}
     - id: update_markdown
       if: ${{ inputs.change_file }}
       shell: bash
@@ -48,9 +59,10 @@ runs:
         # Really long command, adds badge with color and coverage between markers in README.md
         sed -i '/<!-- Coverage Comment:Begin -->/,/<!-- Coverage Comment:End -->/c\<!-- Coverage Comment:Begin -->\n[coverage_badge]: ${{ steps.make_badge.outputs.badge }}\n<!-- Coverage Comment:End -->' ${{ inputs.change_file }}
     - uses: stefanzweifel/git-auto-commit-action@v4
+      if: ${{ inputs.change_file }}
       with:
-        commit_message: Update coverage badge on Readme
-        branch: ${{ github.event.pull_request.merged && github.base_ref || github.head_ref }}
+        commit_message: Update coverage badge
+        branch: ${{ inputs.ref }}
         add_options: '-u'
         commit_options: '--no-verify'
 
