@@ -60,4 +60,5 @@ The following output values can be accessed via `${{ steps.<step-id>.outputs.<ou
 [test-shield]: https://img.shields.io/github/actions/workflow/status/kevinfjiang/coverage-badge/test.yml?style=for-the-badge
 
 <!-- Coverage Comment:Begin -->
+[coverage_badge]: https://img.shields.io/badge/Coverage-100%25-green.svg?style=for-the-badge
 <!-- Coverage Comment:End -->
