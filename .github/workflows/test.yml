@@ -1,6 +1,8 @@
 name: Test github action
 on:
   push:
+    branches:
+      - main
   workflow_dispatch:
 jobs:
   test:
@@ -8,10 +10,37 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+        badge: ${{ steps.default.outputs.badge }}
     steps:
     - uses: actions/checkout@v3
-    - uses: kevinfjiang/coverage-badge@main
+    - id: default
+      uses: kevinfjiang/coverage-badge@main
       with:
         coverage: 100
         change_file: ./README.md
+    - uses: nick-fields/assert-action@v1
+      with:
+        expected: https://img.shields.io/badge/Coverage-100%25-green.svg?style=for-the-badge
+        actual: ${{ steps.default.outputs.badge }}
+        comparison: exact
 
+  compare:
+    name: Compare defaults for github action
+    needs: test
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read  # Only give read permission as write isn't needed
+    steps:
+    - id: manual
+      uses: kevinfjiang/coverage-badge@main
+      with:
+        coverage: 100
+        color: green
+        style: for-the-badge
+    - uses: nick-fields/assert-action@v1
+      with:
+        expected: ${{ steps.manual.outputs.badge }}
+        actual: ${{ needs.test.outputs.badge }}
+        comparison: exact
