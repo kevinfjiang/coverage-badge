@@ -1,5 +1,8 @@
-name: Coverage Badge
-description: Writes coverage
+name: ReadMe Badge
+description: Writes coverage badge  to specified files
+branding:
+  icon: "check-square"
+  color: "blue"
 inputs:
   coverage:
     description: Code coverage as a percentage in range [0, 100]
