@@ -46,10 +46,11 @@ runs:
         else
           exit 1
         fi
+        echo "coverage=${{ inputs.coverage }}" | sed 's/[^a-z0-9=]*//g' >> $GITHUB_OUTPUT
         echo "color=$COLOR" >> $GITHUB_OUTPUT
     - id: make_badge
       shell: bash
-      run: echo "badge=https://img.shields.io/badge/Coverage-${{ inputs.coverage }}%25-${{ steps.choose_color.outputs.color }}.svg?style=${{ inputs.style }}" >> $GITHUB_OUTPUT
+      run: echo "badge=https://img.shields.io/badge/Coverage-${{ steps.choose_color.outputs.coverage }}%25-${{ steps.choose_color.outputs.color }}.svg?style=${{ inputs.style }}" >> $GITHUB_OUTPUT
     - uses: actions/checkout@v3
       if: ${{ inputs.change_file }}
       with:

@@ -34,7 +34,7 @@ jobs:
     - id: manual
       uses: kevinfjiang/coverage-badge@main
       with:
-        coverage: 100
+        coverage: 100%
         color: green
         style: for-the-badge
     - uses: nick-fields/assert-action@v1
