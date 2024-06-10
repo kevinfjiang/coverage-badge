@@ -18,7 +18,7 @@ jobs:
       with:
         coverage: 100
         change_file: ./README.md
-    - uses: nick-fields/assert-action@v1
+    - uses: nick-fields/assert-action@v2
       with:
         expected: https://img.shields.io/badge/Coverage-100%25-green.svg?style=for-the-badge
         actual: ${{ steps.default.outputs.badge }}
