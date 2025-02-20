@@ -42,7 +42,7 @@ runs:
         elif ((80 > ${{ inputs.coverage }} && ${{ inputs.coverage }} >= 60)); then
           COLOR="yellow"
         elif ((60 > ${{ inputs.coverage }} && ${{ inputs.coverage }} >= 0)); then
-          COLOR ="red"
+          COLOR="red"
         else
           exit 1
         fi
